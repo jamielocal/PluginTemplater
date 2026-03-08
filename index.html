@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Plugin Maker v1 - STABLE_MAYBE_REALLY</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0d1117] text-gray-300 p-6 font-mono">
+
+    <div class="max-w-md mx-auto bg-[#161b22] border border-[#30363d] rounded-md p-5 shadow-sm">
+        <h2 class="text-[10px] mb-4 text-[#8b949e] italic">// TODO: stop drinking energy drinks at 2am</h2>
+        
+        <div class="space-y-3">
+            <select id="ineedcoffee" class="w-full bg-[#0d1117] border border-[#30363d] p-2 rounded text-xs text-blue-400 outline-none"></select>
+
+            <div class="flex gap-2">
+                <input id="rahh" type="text" value="MyPlugin" onkeyup="skibidi()" placeholder="Name" class="w-1/2 bg-[#0d1117] border border-[#30363d] p-2 rounded text-xs">
+                <input id="fuckihatemylife" type="text" value="com.me.plugin" onkeyup="skibidi()" placeholder="Package" class="w-1/2 bg-[#0d1117] border border-[#30363d] p-2 rounded text-xs">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <input id="whoevenisthis" type="text" placeholder="Author" class="bg-[#0d1117] border border-[#30363d] p-2 rounded text-xs">
+                <input id="thelinkthingy" type="text" value="github.com/jamielocal/PluginTemplater" class="bg-[#0d1117] border border-[#30363d] p-2 rounded text-xs text-gray-500">
+            </div>
+
+            <textarea id="randomjunk" placeholder="Description..." class="w-full bg-[#0d1117] border border-[#30363d] p-2 rounded text-xs h-12"></textarea>
+
+            <button id="thebuttonthatdoesstuff" onclick="pleaseJustWork()" class="w-full bg-[#238636] hover:bg-[#2ea043] py-2 rounded text-xs font-bold text-white disabled:opacity-20 transition-all">
+                GENERATE .ZIP
+            </button>
+        </div>
+        <p id="cryaboutit" class="text-[#f85149] text-[10px] mt-2 hidden text-center">Your package or name is trash. Fix it.</p>
+    </div>
+
+<script>
+// The master list of pain
+const bruh = [
+    { m: "1.21.11", j: "21", a: "1.21.11-R0.1-SNAPSHOT" },
+    { m: "1.21.10", j: "21", a: "1.21.10-R0.1-SNAPSHOT" },
+    { m: "1.21.9",  j: "21", a: "1.21.9-R0.1-SNAPSHOT" },
+    { m: "1.21.8",  j: "21", a: "1.21.8-R0.1-SNAPSHOT" },
+    { m: "1.21.7",  j: "21", a: "1.21.7-R0.1-SNAPSHOT" },
+    { m: "1.21.6",  j: "21", a: "1.21.6-R0.1-SNAPSHOT" },
+    { m: "1.21.5",  j: "21", a: "1.21.5-R0.1-SNAPSHOT" },
+    { m: "1.21.4",  j: "21", a: "1.21.4-R0.1-SNAPSHOT" },
+    { m: "1.21.3",  j: "21", a: "1.21.3-R0.1-SNAPSHOT" },
+    { m: "1.21.2",  j: "21", a: "1.21.2-R0.1-SNAPSHOT" },
+    { m: "1.21.1",  j: "21", a: "1.21.1-R0.1-SNAPSHOT" }
+];
+
+const aaaaaaaaaa = document.getElementById('ineedcoffee');
+bruh.forEach(x => {
+    const o = document.createElement('option');
+    o.value = x.m;
+    o.innerText = `Paper ${x.m} (Java ${x.j})`;
+    aaaaaaaaaa.appendChild(o);
+});
+
+function skibidi() {
+    const n = document.getElementById('rahh').value;
+    const g = document.getElementById('fuckihatemylife').value;
+    const n_ok = /^[a-zA-Z0-9_]+$/.test(n);
+    const g_ok = /^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+[0-9a-z_]$/.test(g);
+
+    document.getElementById('rahh').style.borderColor = n_ok ? '' : '#f85149';
+    document.getElementById('fuckihatemylife').style.borderColor = g_ok ? '' : '#f85149';
+    
+    const b = document.getElementById('thebuttonthatdoesstuff');
+    if(n_ok && g_ok) {
+        b.disabled = false;
+        document.getElementById('cryaboutit').classList.add('hidden');
+    } else {
+        b.disabled = true;
+        document.getElementById('cryaboutit').classList.remove('hidden');
+    }
+}
+
+async function pleaseJustWork() {
+    const zip = new JSZip();
+    const ver = bruh.find(v => v.m === aaaaaaaaaa.value);
+    const n = document.getElementById('rahh').value;
+    const g = document.getElementById('fuckihatemylife').value;
+    const auth = document.getElementById('whoevenisthis').value || "SomeDev";
+    const web = document.getElementById('thelinkthingy').value;
+    const d = document.getElementById('randomjunk').value || "No desc provided";
+    const cls = n.charAt(0).toUpperCase() + n.slice(1);
+    const api = ver.m.split('.').slice(0,2).join('.');
+
+    let p = `<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+<groupId>${g}</groupId>
+<artifactId>${n.toLowerCase()}</artifactId>
+<version>1.0-SNAPSHOT</version>
+<properties>
+<maven.compiler.source>${ver.j}</maven.compiler.source>
+<maven.compiler.target>${ver.j}</maven.compiler.target>
+<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+</properties>
+<repositories><repository><id>papermc</id><url>https://repo.papermc.io/repository/maven-public/</url></repository></repositories>
+<dependencies><dependency><groupId>io.papermc.paper</groupId><artifactId>paper-api</artifactId><version>${ver.a}</version><scope>provided</scope></dependency></dependencies>
+</project>`;
+
+    let y = `name: ${n}\nversion: 1.0\nmain: ${g}.${cls}\napi-version: '${api}'\nauthor: ${auth}\nwebsite: ${web}\ndescription: ${d}`;
+    let c = `package ${g};\n\nimport org.bukkit.plugin.java.JavaPlugin;\n\npublic class ${cls} extends JavaPlugin {\n    @Override\n    public void onEnable() {\n        getLogger().info("${n} is alive!");\n    }\n}`;
+
+    zip.file("pom.xml", p);
+    zip.file("src/main/resources/plugin.yml", y);
+    zip.file(`src/main/java/${g.replace(/\./g, '/')}/${cls}.java`, c);
+
+    const blob = await zip.generateAsync({type:"blob"});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${n}.zip`;
+    link.click();
+}
+skibidi();
+</script>
+</body>
+</html>
